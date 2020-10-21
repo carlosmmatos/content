@@ -67,6 +67,10 @@
   </linux:rpminfo_object>
 
   <linux:rpminfo_state id="state_java_version" version="1">
+<<<<<<< HEAD
     <linux:evr datatype="evr_string" operation="greater than or equal">.*1.8.0.*</linux:evr>
+=======
+    <linux:version datatype="version" operation="greater than or equal">1.8.0</linux:version>
+>>>>>>> 3739ce7a7... Refactor rpminfo_state so that all rpminfo tests for valid version
   </linux:rpminfo_state>
 </def-group>
