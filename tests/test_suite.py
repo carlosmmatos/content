@@ -66,6 +66,11 @@ def parse_args():
                                help="Selection number of reference ID related "
                                     "to benchmark to be used.")
     common_parser.add_argument(
+        "--ssh-port",
+        dest="ssh_port",
+        default=22222,
+        help="SSH port to use for test suite")
+    common_parser.add_argument(
             "--add-platform",
             metavar="<CPE REGEX>",
             default=None,
@@ -207,7 +212,7 @@ def get_logging_dir(options):
 
     if options.logdir is None:
 
-        date_string = time.strftime('%Y-%m-%d-%H%M', time.localtime())
+        date_string = time.strftime('%Y-%m-%d-%H%M%S', time.localtime())
         logging_dir = os.path.join(
             os.getcwd(), 'logs', '{0}-{1}'.format(
                 generic_logdir_stem, date_string))
@@ -305,7 +310,7 @@ def normalize_passed_arguments(options):
             "choosing Docker-based test environment.")
     elif options.container:
         options.test_env = ssg_test_suite.test_env.PodmanTestEnv(
-            options.scanning_mode, options.container)
+            options.scanning_mode, options.container, options.ssh_port)
         logging.info(
             "The base image option has been specified, "
             "choosing Podman-based test environment.")

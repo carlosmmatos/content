@@ -131,6 +131,11 @@ parse_commandline()
 			--dry-run)
 				_arg_dry_run="on"
 				;;
+			--ssh-port)
+				test $# -lt 2 && die "Missing value for the optional argument '$_key'." 1
+				_arg_ssh_port="$2"
+				shift
+				;;
 			-h|--help)
 				print_help
 				exit 0
@@ -193,6 +198,8 @@ test "$_arg_dontclean" = on && additional_args+=(--dontclean)
 
 # Don't act on the default value.
 test -n "$_arg_scenarios" && additional_args+=(--scenario "'$_arg_scenarios'")
+
+test -n "$_arg_ssh_port" && additional_args+=(--ssh-port "$_arg_ssh_port")
 
 test -n "$_arg_datastream" && additional_args+=(--datastream "$_arg_datastream")
 

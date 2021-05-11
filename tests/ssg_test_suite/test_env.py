@@ -244,14 +244,14 @@ class VMTestEnv(TestEnv):
 
 
 class ContainerTestEnv(TestEnv):
-    def __init__(self, scanning_mode, image_name):
+    def __init__(self, scanning_mode, image_name, ssh_port):
         super(ContainerTestEnv, self).__init__(scanning_mode)
         self._name_stem = "ssg_test"
         self.base_image = image_name
         self.created_images = []
         self.containers = []
         self.domain_ip = None
-        self.internal_ssh_port = 22222
+        self.internal_ssh_port = int(ssh_port)
 
     def start(self):
         self.run_container(self.base_image)
@@ -299,7 +299,6 @@ class ContainerTestEnv(TestEnv):
                     "in an unexpected format."
                 )
                 raise RuntimeError(msg)
-
             if self.internal_ssh_port in ports:
                 ssh_port = ports[self.internal_ssh_port]
             else:
@@ -442,8 +441,8 @@ class PodmanTestEnv(ContainerTestEnv):
     # commit images and inspect containers
     name = "podman-based"
 
-    def __init__(self, scanning_mode, image_name):
-        super(PodmanTestEnv, self).__init__(scanning_mode, image_name)
+    def __init__(self, scanning_mode, image_name, ssh_port):
+        super(PodmanTestEnv, self).__init__(scanning_mode, image_name, ssh_port)
 
     def _commit(self, container, image):
         podman_cmd = ["podman", "commit", container, image]
@@ -455,7 +454,7 @@ class PodmanTestEnv(ContainerTestEnv):
             raise RuntimeError(msg)
 
     def _new_container_from_image(self, image_name, container_name):
-        long_name = "{0}_{1}".format(self._name_stem, container_name)
+        long_name = "{0}_{1}_{2}".format(self._name_stem, container_name, self.internal_ssh_port)
         # Podman drops cap_audit_write which causes that it is not possible
         # run sshd by default. Therefore, we need to add the capability.
         podman_cmd = ["podman", "run", "--name", long_name,
